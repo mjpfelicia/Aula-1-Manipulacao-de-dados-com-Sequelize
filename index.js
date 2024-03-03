@@ -33,11 +33,54 @@ class Setor extends Model {
   }
 }
 
+// class Funcionario extends Model {
+
+//   static init(sequelize) {
+//     super.init({
+//       matricula: {
+//         type: DataTypes.INTEGER,
+//         autoIncrement: true,
+//         allowNull: false,
+//         primaryKey: true
+//       },
+//       idsetor: {
+//         type: DataTypes.INTEGER,
+//         references: {
+//           model: Setor,
+//           key: 'idsetor'
+//         },
+//         nome: {
+//           type: DataTypes.STRING(60),
+//           allowNull: false
+//         },
+//         nascimeto: {
+//           type: DataTypes.DATE
+//         },
+//         telefone: {
+//           type: DataTypes.STRING(15)
+//         }
+
+//       }
+
+//     }, { sequelize, modelName: 'funcionario', tableName: 'funcionarios' })
+//   }
+// }
+
+
 Setor.init(sequelize);
+//Funcionario.init(sequelize);
 
-(async () => {
-  const { modelManager } = await sequelize.sync({ force: true });
 
-  console.table({ tabelas: modelManager.all })
+// (async () => {
+//   const { modelManager } = await sequelize.sync({ force: true });
 
-})();
+//   console.table({ tabelas: modelManager.all })
+
+// })();
+
+sequelize.sync({ force: true })
+  .then(({ modelManager }) => {
+    console.table({ tabelas: modelManager.all })
+  }).catch(error => {
+    console.error({ error })
+  })
