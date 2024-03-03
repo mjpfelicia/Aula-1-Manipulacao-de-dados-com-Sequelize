@@ -1,4 +1,5 @@
 // Importando as biliotecas
+const { create } = require("domain");
 const { Sequelize, Model, DataTypes } = require("sequelize");
 
 //Abrindo conexão com o Banco de dados ou criando um novo caso não exista
@@ -33,54 +34,70 @@ class Setor extends Model {
   }
 }
 
-// class Funcionario extends Model {
+class Funcionario extends Model {
 
-//   static init(sequelize) {
-//     super.init({
-//       matricula: {
-//         type: DataTypes.INTEGER,
-//         autoIncrement: true,
-//         allowNull: false,
-//         primaryKey: true
-//       },
-//       idsetor: {
-//         type: DataTypes.INTEGER,
-//         references: {
-//           model: Setor,
-//           key: 'idsetor'
-//         },
-//         nome: {
-//           type: DataTypes.STRING(60),
-//           allowNull: false
-//         },
-//         nascimeto: {
-//           type: DataTypes.DATE
-//         },
-//         telefone: {
-//           type: DataTypes.STRING(15)
-//         }
+  static init(sequelize) {
+    super.init({
+      matricula: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        allowNull: false,
+        primaryKey: true
+      },
+      idsetor: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: Setor,
+          key: 'idsetor'
+        },
+        nome: {
+          type: DataTypes.STRING(60),
+          allowNull: false
+        },
+        nascimeto: {
+          type: DataTypes.DATE
+        },
+        telefone: {
+          type: DataTypes.STRING(15)
+        }
 
-//       }
+      }
 
-//     }, { sequelize, modelName: 'funcionario', tableName: 'funcionarios' })
-//   }
-// }
-
+    }, { sequelize, modelName: 'funcionario', tableName: 'funcionarios' })
+  }
+}
 
 Setor.init(sequelize);
-//Funcionario.init(sequelize);
+Funcionario.init(sequelize);
+
+(async () => {
+  const { modelManager } = await sequelize.sync({ force: true });
 
 
-// (async () => {
-//   const { modelManager } = await sequelize.sync({ force: true });
+  // usando o create 
 
-//   console.table({ tabelas: modelManager.all })
+  const setor_f = await Setor.create({
+    nome: "Financeiro", ramal: "2134", email: "financeiro@empresa.com"
+  });
+  const setor_create_S = await Setor.create({
+    nome: "Secretaria", ramal: "2135", email: "secretaria@empresa.com"
+  });
+  const setor_create_P = await Setor.create({
+    nome: "Portaria", ramal: "2136", email: "portaria@empresa.com"
+  });
+//Read - listar objetos
 
-// })();
+const setores_listar = await Setor.findAll();
 
-sequelize.sync({ force: true })
-  .then(({ modelManager }) => {
-    console.table({ tabelas: modelManager.all })
-  }).catch(error => {
-    console.error({ error })
-  })
+
+console.log("Lista de setores:\n", JSON.stringify(setores_listar,null,2),"\n\n")
+
+  console.table({ tabelas: modelManager.all })
+})();
+
+// sequelize.sync({ force: true })
+//   .then(({ modelManager }) => {
+//     console.table({ tabelas: modelManager.all })
+//   }).catch(error => {
+//     console.error({ error })
+//   })
